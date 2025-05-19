@@ -30,8 +30,8 @@
   </style>
 </head>
 <body>
-  <svg id="clock" viewBox="0 0 500 350" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-    <g id="clockGroup" transform="translate(90, 40)">
+  <svg id="clock" viewBox="0 0 500 320" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <g id="clockGroup" transform="translate(90, 30)">
       <g id="hourGroup">
         <text x="0" y="0" class="label">HH</text>
       </g>
@@ -58,13 +58,12 @@
 
     const hourGroup = document.getElementById('hourGroup');
     const minuteGroup = document.getElementById('minuteGroup');
-
     const digitPaths = [];
 
     for (let i = 0; i < 4; i++) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       const xOffset = (i % 2) * 130 + 40;
-      const yOffset = 0; // align with label top
+      const yOffset = 0;
       path.setAttribute("class", "digit");
       path.setAttribute("transform", `translate(${xOffset}, ${yOffset})`);
       (i < 2 ? hourGroup : minuteGroup).appendChild(path);
