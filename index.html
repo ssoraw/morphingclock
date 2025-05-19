@@ -31,9 +31,13 @@
 </head>
 <body>
   <svg id="clock" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-    <g id="clockGroup">
-      <text id="label-hh" x="0" y="0" class="label">HH</text>
-      <text id="label-mm" x="0" y="140" class="label">MM</text>
+    <g id="clockGroup" transform="translate(110, 20)">
+      <g id="hourGroup">
+        <text x="0" y="0" class="label">HH</text>
+      </g>
+      <g id="minuteGroup" transform="translate(0, 140)">
+        <text x="0" y="0" class="label">MM</text>
+      </g>
     </g>
   </svg>
 
@@ -52,17 +56,22 @@
       '9': 'M98.4 71.8C98.4 120.8 78.2 145.8 46.8 145.8C22.6 145.8 4.8 131.4 2.8 109.2H30.6C32 119 38.4 123.4 47 123.4C61.6 123.4 70.4 108 70.4 83.8L70 83.4C63.6 93 52.6 95.4 43 95.4C17.4 95.4 0 76.2 0 50.8C0 19 18 0 48.4 0C79.2 0 98.4 20 98.4 71.8ZM48.8 73C60.2 73 69.6 64.6 69.6 49.2C69.6 33 62.6 23 48.2 23C37 23 28 30.8 28 47C28 64 34.6 73 48.8 73Z'
     };
 
-    const clockGroup = document.getElementById("clockGroup");
+    const hourGroup = document.getElementById('hourGroup');
+    const minuteGroup = document.getElementById('minuteGroup');
 
     const digitPaths = [];
 
     for (let i = 0; i < 4; i++) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       const xOffset = (i % 2) * 130 + 40;
-      const yOffset = i < 2 ? 20 : 160;
+      const yOffset = 20;
       path.setAttribute("class", "digit");
       path.setAttribute("transform", `translate(${xOffset}, ${yOffset})`);
-      clockGroup.appendChild(path);
+      if (i < 2) {
+        hourGroup.appendChild(path);
+      } else {
+        minuteGroup.appendChild(path);
+      }
       digitPaths.push({ path, current: '', next: '', interpolator: null });
     }
 
@@ -111,3 +120,4 @@
   </script>
 </body>
 </html>
+
