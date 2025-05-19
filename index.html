@@ -11,11 +11,11 @@
       background-color: black;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
     }
     svg {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
     }
     .digit {
       fill: white;
@@ -23,16 +23,16 @@
     .label {
       font-family: Helvetica, sans-serif;
       fill: white;
-      font-size: 18px;
+      font-size: 16px;
       text-anchor: start;
       dominant-baseline: hanging;
     }
   </style>
 </head>
 <body>
-  <svg id="clock" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-    <text id="label-hh" x="100" y="40" class="label">HH</text>
-    <text id="label-mm" x="100" y="230" class="label">MM</text>
+  <svg id="clock" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <text x="50" y="30" class="label">HH</text>
+    <text x="50" y="155" class="label">MM</text>
   </svg>
 
   <script src="https://unpkg.com/flubber"></script>
@@ -52,17 +52,15 @@
 
     const clockEl = document.getElementById("clock");
     const digitPaths = [];
-    const spacing = 120;
 
-    for (let row = 0; row < 2; row++) {
-      for (let i = 0; i < 2; i++) {
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const yOffset = row === 0 ? 40 : 230;
-        path.setAttribute("class", "digit");
-        path.setAttribute("transform", `translate(${i * spacing + 140}, ${yOffset})`);
-        clockEl.appendChild(path);
-        digitPaths.push({ path, current: '', next: '', interpolator: null });
-      }
+    for (let i = 0; i < 4; i++) {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const xOffset = (i % 2) * 130 + 170;
+      const yOffset = i < 2 ? 50 : 170;
+      path.setAttribute("class", "digit");
+      path.setAttribute("transform", `translate(${xOffset}, ${yOffset})`);
+      clockEl.appendChild(path);
+      digitPaths.push({ path, current: '', next: '', interpolator: null });
     }
 
     function formatTime(date) {
