@@ -30,10 +30,10 @@
   </style>
 </head>
 <body>
-  <svg id="clock" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-    <g id="clockGroup" transform="translate(80, 30)">
-      <text x="0" y="0" class="label">HH</text>
-      <text x="0" y="120" class="label">MM</text>
+  <svg id="clock" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <g id="clockGroup">
+      <text id="label-hh" x="0" y="0" class="label">HH</text>
+      <text id="label-mm" x="0" y="140" class="label">MM</text>
     </g>
   </svg>
 
@@ -53,12 +53,13 @@
     };
 
     const clockGroup = document.getElementById("clockGroup");
+
     const digitPaths = [];
 
     for (let i = 0; i < 4; i++) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const xOffset = (i % 2) * 130 + 50;
-      const yOffset = i < 2 ? 30 : 150;
+      const xOffset = (i % 2) * 130 + 40;
+      const yOffset = i < 2 ? 20 : 160;
       path.setAttribute("class", "digit");
       path.setAttribute("transform", `translate(${xOffset}, ${yOffset})`);
       clockGroup.appendChild(path);
