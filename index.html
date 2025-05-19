@@ -8,7 +8,8 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background-color: black;
+      width: 100%;
+      background: black;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -21,22 +22,27 @@
       fill: white;
     }
     .label {
-      font-family: Helvetica, sans-serif;
       fill: white;
-      font-size: 16px;
-      text-anchor: start;
-      dominant-baseline: text-before-edge;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
- <svg id="clock" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet">
-<g id="clockGroup" transform="translate(150, 60) scale(0.62)">
-      <g id="hourGroup">
-        <text x="0" y="0" class="label">HH</text>
+  <svg id="clock" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <g id="clockGroup" transform="translate(150, 60) scale(0.62)">
+      <!-- HH Group -->
+      <g id="hoursGroup" transform="translate(0, 0)">
+        <text class="label" x="-40" y="0">HH</text>
+        <path class="digit" id="hh1" transform="translate(0, 20)" d="" />
+        <path class="digit" id="hh2" transform="translate(110, 20)" d="" />
       </g>
-      <g id="minuteGroup" transform="translate(0, 175)">
-        <text x="0" y="0" class="label">MM</text>
+
+      <!-- MM Group -->
+      <g id="minutesGroup" transform="translate(0, 175)">
+        <text class="label" x="-40" y="0">MM</text>
+        <path class="digit" id="mm1" transform="translate(0, 20)" d="" />
+        <path class="digit" id="mm2" transform="translate(110, 20)" d="" />
       </g>
     </g>
   </svg>
@@ -56,58 +62,44 @@
       '9': 'M98.4 71.8C98.4 120.8 78.2 145.8 46.8 145.8C22.6 145.8 4.8 131.4 2.8 109.2H30.6C32 119 38.4 123.4 47 123.4C61.6 123.4 70.4 108 70.4 83.8L70 83.4C63.6 93 52.6 95.4 43 95.4C17.4 95.4 0 76.2 0 50.8C0 19 18 0 48.4 0C79.2 0 98.4 20 98.4 71.8ZM48.8 73C60.2 73 69.6 64.6 69.6 49.2C69.6 33 62.6 23 48.2 23C37 23 28 30.8 28 47C28 64 34.6 73 48.8 73Z'
     };
 
-    const hourGroup = document.getElementById('hourGroup');
-    const minuteGroup = document.getElementById('minuteGroup');
-    const digitPaths = [];
+    const hh1 = document.getElementById("hh1");
+    const hh2 = document.getElementById("hh2");
+    const mm1 = document.getElementById("mm1");
+    const mm2 = document.getElementById("mm2");
 
-    for (let i = 0; i < 4; i++) {
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const xOffset = (i % 2) * 130 + 40;
-      path.setAttribute("class", "digit");
-      path.setAttribute("transform", `translate(${xOffset}, 0)`);
-      (i < 2 ? hourGroup : minuteGroup).appendChild(path);
-      digitPaths.push({ path, current: '', next: '', interpolator: null });
-    }
-
-    function formatTime(date) {
-      return [
-        String(date.getHours()).padStart(2, '0'),
-        String(date.getMinutes()).padStart(2, '0')
-      ];
-    }
-
-    function updateClock() {
-      const now = new Date();
-      const [hNow, mNow] = formatTime(now);
-      const next = new Date(now.getTime() + 60000);
-      const [hNext, mNext] = formatTime(next);
-      const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
-      const progress = seconds / 60;
-      const nowStr = hNow + mNow;
-      const nextStr = hNext + mNext;
-
-      for (let i = 0; i < 4; i++) {
-        const digit = digitPaths[i];
-        const charNow = nowStr[i];
-        const charNext = nextStr[i];
-
-        if (charNow !== charNext) {
-          if (digit.current !== charNow || digit.next !== charNext) {
-            digit.interpolator = flubber.interpolate(DIGITS[charNow], DIGITS[charNext]);
-            digit.current = charNow;
-            digit.next = charNext;
-          }
-          digit.path.setAttribute('d', digit.interpolator(progress));
-        } else {
-          digit.path.setAttribute('d', DIGITS[charNow]);
-          digit.current = charNow;
-          digit.next = charNow;
+    function morph(pathEl, from, to) {
+      if (from === to) return;
+      const interp = flubber.interpolate(from, to);
+      let frame = 0;
+      const totalFrames = 30;
+      function animate() {
+        if (frame <= totalFrames) {
+          pathEl.setAttribute("d", interp(frame / totalFrames));
+          frame++;
+          requestAnimationFrame(animate);
         }
       }
+      animate();
     }
 
-    setInterval(updateClock, 1000 / 30);
+    function updateClock(prevDigits) {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, "0");
+      const m = now.getMinutes().toString().padStart(2, "0");
+
+      const digits = [h[0], h[1], m[0], m[1]];
+      const paths = [hh1, hh2, mm1, mm2];
+
+      digits.forEach((d, i) => {
+        const to = DIGITS[d];
+        const from = paths[i].getAttribute("d") || to;
+        morph(paths[i], from, to);
+      });
+    }
+
+    let prevTime = "";
     updateClock();
+    setInterval(updateClock, 1000);
   </script>
 </body>
 </html>
