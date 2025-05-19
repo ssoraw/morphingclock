@@ -25,17 +25,17 @@
       fill: white;
       font-size: 16px;
       text-anchor: start;
-      dominant-baseline: hanging;
+      dominant-baseline: text-before-edge;
     }
   </style>
 </head>
 <body>
-  <svg id="clock" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-    <g id="clockGroup" transform="translate(110, 20)">
+  <svg id="clock" viewBox="0 0 500 350" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <g id="clockGroup" transform="translate(90, 40)">
       <g id="hourGroup">
         <text x="0" y="0" class="label">HH</text>
       </g>
-      <g id="minuteGroup" transform="translate(0, 140)">
+      <g id="minuteGroup" transform="translate(0, 160)">
         <text x="0" y="0" class="label">MM</text>
       </g>
     </g>
@@ -64,14 +64,10 @@
     for (let i = 0; i < 4; i++) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       const xOffset = (i % 2) * 130 + 40;
-      const yOffset = 20;
+      const yOffset = 0; // align with label top
       path.setAttribute("class", "digit");
       path.setAttribute("transform", `translate(${xOffset}, ${yOffset})`);
-      if (i < 2) {
-        hourGroup.appendChild(path);
-      } else {
-        minuteGroup.appendChild(path);
-      }
+      (i < 2 ? hourGroup : minuteGroup).appendChild(path);
       digitPaths.push({ path, current: '', next: '', interpolator: null });
     }
 
@@ -85,12 +81,10 @@
     function updateClock() {
       const now = new Date();
       const [hNow, mNow] = formatTime(now);
-      const next = new Date(now.getTime() + 60 * 1000);
+      const next = new Date(now.getTime() + 60000);
       const [hNext, mNext] = formatTime(next);
-
       const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
       const progress = seconds / 60;
-
       const nowStr = hNow + mNow;
       const nextStr = hNext + mNext;
 
@@ -110,7 +104,6 @@
           digit.path.setAttribute('d', DIGITS[charNow]);
           digit.current = charNow;
           digit.next = charNow;
-          digit.interpolator = null;
         }
       }
     }
@@ -120,4 +113,3 @@
   </script>
 </body>
 </html>
-
