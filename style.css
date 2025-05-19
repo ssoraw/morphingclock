@@ -1,0 +1,24 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+svg {
+  width: 100vw;
+  height: 100vh;
+}
+.digit {
+  fill: white;
+}
+.label {
+  font-family: Helvetica, sans-serif;
+  fill: white;
+  font-size: 18px;
+  opacity: 1;
+  text-anchor: start;
+  dominant-baseline: hanging;
+}
